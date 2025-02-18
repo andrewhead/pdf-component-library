@@ -8,8 +8,6 @@ import {
   ScrollContext,
 } from '@allenai/pdf-components';
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router';
-import { BrowserRouter, Route } from 'react-router-dom';
 
 import { DemoHeaderContextProvider } from '../context/DemoHeaderContext';
 import { Header } from './Header';
@@ -17,7 +15,13 @@ import { ScrollToDemo } from './ScrollToDemo';
 import { HighlightOverlayDemo } from './HighlightOverlayDemo';
 import { TextHighlightDemo } from './TextHighlightDemo';
 
-export const Reader: React.FunctionComponent<RouteComponentProps> = () => {
+
+// interface Props {
+//   paperId: string;
+// }
+
+
+export const Reader: React.FunctionComponent = () => {
   const { pageDimensions, numPages } = React.useContext(DocumentContext);
   const { setScrollRoot } = React.useContext(ScrollContext);
 
@@ -67,31 +71,27 @@ export const Reader: React.FunctionComponent<RouteComponentProps> = () => {
   }, [pageDimensions]);
 
   return (
-    <BrowserRouter>
-      <Route path="/">
-        <div className="reader__container">
-          <DemoHeaderContextProvider>
-            <Header pdfUrl={samplePdfUrl} />
-            <DocumentWrapper
-              className="reader__main"
-              file={samplePdfUrl}
-              inputRef={pdfContentRef}
-              renderType={RENDER_TYPE.SINGLE_CANVAS}>
-              <div className="reader__page-list" ref={pdfScrollableRef}>
-                {Array.from({ length: numPages }).map((_, i) => (
-                  <PageWrapper key={i} pageIndex={i} renderType={RENDER_TYPE.SINGLE_CANVAS}>
-                    <Overlay>
-                      <HighlightOverlayDemo pageIndex={i} boxes={boxes} />
-                      <TextHighlightDemo pageIndex={i} boxes={boxes} />
-                      <ScrollToDemo pageIndex={i} />
-                    </Overlay>
-                  </PageWrapper>
-                ))}
-              </div>
-            </DocumentWrapper>
-          </DemoHeaderContextProvider>
-        </div>
-      </Route>
-    </BrowserRouter>
+    <div className="reader__container">
+      <DemoHeaderContextProvider>
+        <Header pdfUrl={samplePdfUrl} />
+        <DocumentWrapper
+          className="reader__main"
+          file={samplePdfUrl}
+          inputRef={pdfContentRef}
+          renderType={RENDER_TYPE.SINGLE_CANVAS}>
+          <div className="reader__page-list" ref={pdfScrollableRef}>
+            {Array.from({ length: numPages }).map((_, i) => (
+              <PageWrapper key={i} pageIndex={i} renderType={RENDER_TYPE.SINGLE_CANVAS}>
+                <Overlay>
+                  <HighlightOverlayDemo pageIndex={i} boxes={boxes} />
+                  <TextHighlightDemo pageIndex={i} boxes={boxes} />
+                  <ScrollToDemo pageIndex={i} />
+                </Overlay>
+              </PageWrapper>
+            ))}
+          </div>
+        </DocumentWrapper>
+      </DemoHeaderContextProvider>
+    </div>
   );
 };
