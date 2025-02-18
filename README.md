@@ -8,3 +8,6 @@ I have edited the repository to:
   that we want to highlight)
 * simplify the reader based on the original demo
 * add in some instructions for how to launch and build the UI demo
+
+For instructions on how to run the PDF reader demo, go to the
+README.md in the `ui/demo` directory.
