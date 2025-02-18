@@ -6,8 +6,15 @@
     <title>The Best PDF Reader</title>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <!-- If you want to test out the idea that this app can actually be loaded alongside
+         other content, then you can comment in the next two lines, and then comment
+         out the <div id='root'> below it. The two lines below will show how to
+         fit this reader side by side with other content. -->
+    <!--
+    <div id="first" style="float: left; width: 45%;">Some simple content here...</div>
+    <div id="root" style="float:left; width: 50%; overflow-x: hidden; height: 100%;"></div>
+    -->
+    <div id="root" />
     <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
     <script defer src="/bundle.js"></script>
