@@ -16,3 +16,6 @@ Once you have done that, open up a Terminal in VSCode. Then...
 conda install poppler
 pip install 'papermage[dev,predictors,visualizers]'
 ```
+
+Inspiration for how to process the sentences and bounding boxes came from this
+tutorial for the Semantic Reader platform: https://openreader.semanticscholar.org/LLMQA.

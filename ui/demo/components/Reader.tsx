@@ -1,4 +1,5 @@
 import {
+  BoundingBoxType,
   DocumentContext,
   DocumentWrapper,
   Overlay,
@@ -13,7 +14,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import { DemoHeaderContextProvider } from '../context/DemoHeaderContext';
 import { Header } from './Header';
 import { ScrollToDemo } from './ScrollToDemo';
-import { TextHighlightDemo } from './TextHighlightDemo';
+import { HighlightOverlayDemo } from './HighlightOverlayDemo';
 
 export const Reader: React.FunctionComponent<RouteComponentProps> = () => {
   const { pageDimensions, numPages } = React.useContext(DocumentContext);
@@ -25,18 +26,43 @@ export const Reader: React.FunctionComponent<RouteComponentProps> = () => {
   // ref for the scrollable region where the pages are rendered
   const pdfScrollableRef = React.createRef<HTMLDivElement>();
 
-  const samplePdfUrl = 'public/2112.07873v1.pdf';
+  const paperName = "explainable-notes";
+  const boxesJson = `public/${paperName}-boxes.json`
+
+
+  const samplePdfUrl = 'public/explainable-notes.pdf';
 
   React.useEffect(() => {
     setScrollRoot(null);
   }, []);
 
+  const [boxes, setBoxes] = React.useState<BoundingBoxType[]>([]);
   // Attaches annotation data to paper
   React.useEffect(() => {
     // Don't execute until paper data and PDF document have loaded
     if (!pageDimensions.height || !pageDimensions.width) {
       return;
     }
+    // Load JSON from boxesJson file.
+    // This code is courtesy of Copilot.
+    fetch(boxesJson)
+    .then((response) => response.json())
+    .then((data) => {
+      const allBoxes = []
+      for (const entry of data) {
+        for (const box of entry.boxes) {
+          allBoxes.push({
+            page: box.page,
+            top: box.top * pageDimensions.height,
+            left: box.left * pageDimensions.width,
+            width: box.width * pageDimensions.width,
+            height: box.height * pageDimensions.height,
+          })
+        }
+      }
+      console.log(allBoxes);
+      setBoxes(allBoxes);
+    });
   }, [pageDimensions]);
 
   return (
@@ -54,7 +80,8 @@ export const Reader: React.FunctionComponent<RouteComponentProps> = () => {
                 {Array.from({ length: numPages }).map((_, i) => (
                   <PageWrapper key={i} pageIndex={i} renderType={RENDER_TYPE.SINGLE_CANVAS}>
                     <Overlay>
-                      <TextHighlightDemo pageIndex={i} />
+                      <HighlightOverlayDemo pageIndex={i} boxes={boxes} />
+                      {/* <TextHighlightDemo pageIndex={i} /> */}
                       <ScrollToDemo pageIndex={i} />
                     </Overlay>
                   </PageWrapper>

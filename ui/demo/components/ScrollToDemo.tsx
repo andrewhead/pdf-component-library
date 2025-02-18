@@ -12,9 +12,9 @@ export const ScrollToDemo: React.FunctionComponent<Props> = ({ pageIndex }: Prop
   const boundingBoxProps = {
     page: 4,
     top: 100,
-    left: 250,
-    height: 340,
-    width: 320,
+    left: 100,
+    height: 2,
+    width: 2,
   };
 
   if (pageIndex !== boundingBoxProps.page) {
@@ -25,6 +25,7 @@ export const ScrollToDemo: React.FunctionComponent<Props> = ({ pageIndex }: Prop
     <BoundingBox
       id="demoFigure"
       className="reader__sample-figure-scroll-bbox"
+      isHighlighted={false}
       {...boundingBoxProps}
     />
   );
