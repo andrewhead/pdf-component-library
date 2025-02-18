@@ -15,6 +15,7 @@ import { DemoHeaderContextProvider } from '../context/DemoHeaderContext';
 import { Header } from './Header';
 import { ScrollToDemo } from './ScrollToDemo';
 import { HighlightOverlayDemo } from './HighlightOverlayDemo';
+import { TextHighlightDemo } from './TextHighlightDemo';
 
 export const Reader: React.FunctionComponent<RouteComponentProps> = () => {
   const { pageDimensions, numPages } = React.useContext(DocumentContext);
@@ -81,7 +82,7 @@ export const Reader: React.FunctionComponent<RouteComponentProps> = () => {
                   <PageWrapper key={i} pageIndex={i} renderType={RENDER_TYPE.SINGLE_CANVAS}>
                     <Overlay>
                       <HighlightOverlayDemo pageIndex={i} boxes={boxes} />
-                      {/* <TextHighlightDemo pageIndex={i} /> */}
+                      <TextHighlightDemo pageIndex={i} boxes={boxes} />
                       <ScrollToDemo pageIndex={i} />
                     </Overlay>
                   </PageWrapper>
