@@ -9,9 +9,12 @@ import * as ReactDOM from 'react-dom';
 
 import { Reader } from './components/Reader';
 
+// Get the paperID from the URL
+const paperId = window.location.pathname.split('/').pop() || 'explainable-notes';
+
 const App = () => (
   <ContextProvider>
-    <Reader paperId="explainable-notes" />
+    <Reader paperId={paperId} />
   </ContextProvider>
 );
 
