@@ -11,24 +11,13 @@ import { RouteComponentProps } from 'react-router';
 import { BrowserRouter, Route } from 'react-router-dom';
 
 import { DemoHeaderContextProvider } from '../context/DemoHeaderContext';
-import { Annotations, generateCitations, PageToAnnotationsMap } from '../types/annotations';
-import { RawCitation } from '../types/citations';
-import { CitationsDemo } from './CitationsDemo';
 import { Header } from './Header';
-import { HighlightOverlayDemo } from './HighlightOverlayDemo';
-import { NoteTakingDemo } from './NoteTakingDemo';
-import { Outline } from './Outline';
 import { ScrollToDemo } from './ScrollToDemo';
 import { TextHighlightDemo } from './TextHighlightDemo';
-import { Thumbnail } from './Thumbnail';
 
 export const Reader: React.FunctionComponent<RouteComponentProps> = () => {
   const { pageDimensions, numPages } = React.useContext(DocumentContext);
   const { setScrollRoot } = React.useContext(ScrollContext);
-  const [annotations, setAnnotations] = React.useState<PageToAnnotationsMap>(
-    new Map<number, Annotations>()
-  );
-  const [rawCitations, setRawCitations] = React.useState<RawCitation[]>();
 
   // ref for the div in which the Document component renders
   const pdfContentRef = React.createRef<HTMLDivElement>();
@@ -37,21 +26,6 @@ export const Reader: React.FunctionComponent<RouteComponentProps> = () => {
   const pdfScrollableRef = React.createRef<HTMLDivElement>();
 
   const samplePdfUrl = 'public/2112.07873v1.pdf';
-  const sampleS2airsUrl =
-    'http://s2airs.prod.s2.allenai.org/v1/pdf_data?pdf_sha=9b79eb8d21c8a832daedbfc6d8c31bebe0da3ed5';
-
-  React.useEffect(() => {
-    // If data has been loaded then return directly to prevent sending multiple requests
-    if (rawCitations) {
-      return;
-    }
-
-    fetch(sampleS2airsUrl, { referrer: '' })
-      .then(response => response.json())
-      .then(data => {
-        setRawCitations(data[0].citations);
-      });
-  }, [pageDimensions]);
 
   React.useEffect(() => {
     setScrollRoot(null);
@@ -60,12 +34,10 @@ export const Reader: React.FunctionComponent<RouteComponentProps> = () => {
   // Attaches annotation data to paper
   React.useEffect(() => {
     // Don't execute until paper data and PDF document have loaded
-    if (!rawCitations || !pageDimensions.height || !pageDimensions.width) {
+    if (!pageDimensions.height || !pageDimensions.width) {
       return;
     }
-
-    setAnnotations(generateCitations(rawCitations, pageDimensions));
-  }, [rawCitations, pageDimensions]);
+  }, [pageDimensions]);
 
   return (
     <BrowserRouter>
@@ -78,26 +50,17 @@ export const Reader: React.FunctionComponent<RouteComponentProps> = () => {
               file={samplePdfUrl}
               inputRef={pdfContentRef}
               renderType={RENDER_TYPE.SINGLE_CANVAS}>
-              <Outline parentRef={pdfContentRef} />
-              <Thumbnail parentRef={pdfContentRef} />
               <div className="reader__page-list" ref={pdfScrollableRef}>
                 {Array.from({ length: numPages }).map((_, i) => (
                   <PageWrapper key={i} pageIndex={i} renderType={RENDER_TYPE.SINGLE_CANVAS}>
                     <Overlay>
-                      <HighlightOverlayDemo pageIndex={i} />
                       <TextHighlightDemo pageIndex={i} />
                       <ScrollToDemo pageIndex={i} />
-                      <CitationsDemo
-                        annotations={annotations}
-                        pageIndex={i}
-                        parentRef={pdfScrollableRef}
-                      />
                     </Overlay>
                   </PageWrapper>
                 ))}
               </div>
             </DocumentWrapper>
-            <NoteTakingDemo />
           </DemoHeaderContextProvider>
         </div>
       </Route>

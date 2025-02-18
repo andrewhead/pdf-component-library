@@ -60,25 +60,12 @@ export const Header: React.FunctionComponent<Props> = ({ pdfUrl }: Props) => {
       <div className="header-control">
         <SimpleZoomControl />
       </div>
-      <div className="header-control">
-        <a onClick={handleShowOutline}>Outline</a>
-      </div>
-      <div className="header-control">
-        <a onClick={handleShowThumbnail}>Thumbnail</a>
-      </div>
-      <div className={classnames('header-control', { 'is-selected': isShowingHighlightOverlay })}>
-        <a onClick={handleToggleHighlightOverlay}>Highlight Overlay</a>
-      </div>
       <div className={classnames('header-control', { 'is-selected': isShowingTextHighlight })}>
         <a onClick={handleToggleTextHighlight}>Highlight Text</a>
       </div>
       <div className="header-control">
         <a onClick={handleScrollToFigure}>Scroll to Figure 1</a>
       </div>
-      <div className={classnames('header-control', { 'is-selected': isShowingNoteTaking })}>
-        <a onClick={handleShowNoteTaking}>Note Taking</a>
-      </div>
-      <DownloadButton pdfUrl={pdfUrl} />
     </div>
   );
 };
