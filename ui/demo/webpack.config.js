@@ -56,8 +56,14 @@ module.exports = {
     }),
   ],
   output: {
-    filename: 'main.[fullhash:6].js',
+    filename: 'bundle.js',
+    library: "Reader",
+    libraryTarget: "umd",
     path: path.resolve(__dirname, 'build'),
+  },
+  externals: {
+    react: "React",
+    "react-dom": "ReactDOM",
   },
   devServer: {
     hot: true,

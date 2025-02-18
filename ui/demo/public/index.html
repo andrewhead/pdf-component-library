@@ -8,6 +8,15 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <script src="https://stats.allenai.org/init.min.js" data-spa="true" async></script>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script defer src="/bundle.js"></script>
+    <script>
+      window.onload = () => {
+        // Get the paperID from the URL or use the default.
+        const paperId = window.location.pathname.split('/').pop() || 'explainable-notes';
+        window.renderReaderApp(paperId, "root");
+      }
+    </script>
   </body>
 </html>

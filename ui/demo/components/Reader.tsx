@@ -31,7 +31,7 @@ export const Reader: React.FunctionComponent<Props> = ({ paperId }) => {
   // ref for the scrollable region where the pages are rendered
   const pdfScrollableRef = React.createRef<HTMLDivElement>();
 
-  const boxesJson = `data/${paperId}-boxes.json`
+  const boxesJson = `public/${paperId}-boxes.json`
   const samplePdfUrl = `public/${paperId}.pdf`;
 
   React.useEffect(() => {

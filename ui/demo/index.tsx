@@ -7,15 +7,30 @@ import { ContextProvider } from '@allenai/pdf-components';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+declare global {
+  interface Window {
+    ReaderApp: React.FunctionComponent<{ paperId: string }>;
+    renderReaderApp: (paperId: string, containerId: string) => void;
+  }
+}
+
 import { Reader } from './components/Reader';
 
-// Get the paperID from the URL
-const paperId = window.location.pathname.split('/').pop() || 'explainable-notes';
+interface Props {
+  paperId: string;
+}
 
-const App = () => (
+const ReaderApp: React.FunctionComponent<Props> = ({ paperId }) => (
   <ContextProvider>
     <Reader paperId={paperId} />
   </ContextProvider>
 );
 
-ReactDOM.render(<App />, document.getElementById('root'));
+// Uncomment this when you want to test this out as a standalone app.
+// ReactDOM.render(<ReaderApp />, document.getElementById('root'));
+
+
+window.ReaderApp = ReaderApp;
+window.renderReaderApp = (paperId: string, containerId: string) => {
+  ReactDOM.render(<ReaderApp paperId={paperId} />, document.getElementById(containerId));
+}
