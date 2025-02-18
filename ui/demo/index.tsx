@@ -11,7 +11,7 @@ import { Reader } from './components/Reader';
 
 const App = () => (
   <ContextProvider>
-    <Reader />
+    <Reader paperId="explainable-notes" />
   </ContextProvider>
 );
 

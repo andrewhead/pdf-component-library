@@ -16,12 +16,12 @@ import { HighlightOverlayDemo } from './HighlightOverlayDemo';
 import { TextHighlightDemo } from './TextHighlightDemo';
 
 
-// interface Props {
-//   paperId: string;
-// }
+interface Props {
+  paperId: string;
+}
 
 
-export const Reader: React.FunctionComponent = () => {
+export const Reader: React.FunctionComponent<Props> = ({ paperId }) => {
   const { pageDimensions, numPages } = React.useContext(DocumentContext);
   const { setScrollRoot } = React.useContext(ScrollContext);
 
@@ -31,11 +31,8 @@ export const Reader: React.FunctionComponent = () => {
   // ref for the scrollable region where the pages are rendered
   const pdfScrollableRef = React.createRef<HTMLDivElement>();
 
-  const paperName = "explainable-notes";
-  const boxesJson = `data/${paperName}-boxes.json`
-
-
-  const samplePdfUrl = 'public/explainable-notes.pdf';
+  const boxesJson = `data/${paperId}-boxes.json`
+  const samplePdfUrl = `public/${paperId}.pdf`;
 
   React.useEffect(() => {
     setScrollRoot(null);
