@@ -27,7 +27,7 @@ export const Reader: React.FunctionComponent<RouteComponentProps> = () => {
   const pdfScrollableRef = React.createRef<HTMLDivElement>();
 
   const paperName = "explainable-notes";
-  const boxesJson = `public/${paperName}-boxes.json`
+  const boxesJson = `data/${paperName}-boxes.json`
 
 
   const samplePdfUrl = 'public/explainable-notes.pdf';

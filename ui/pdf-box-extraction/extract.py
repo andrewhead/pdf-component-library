@@ -14,20 +14,28 @@ def find_boxes(search_strings, document):
 
     # Search for each of the search strings, and find bounding boxes for
     # each of those search strings if we can find them in the text.
-    for paragraph in document.paragraphs:
-        for search_string in search_strings:
-            search_sents = sentence_segmenter.segment(search_string)
-            for search_sent in search_sents:
+    for search_string in search_strings:
+        search_sents = sentence_segmenter.segment(search_string)
+        for search_sent in search_sents:
+            search_sent_found = False
+
+            for paragraph in document.paragraphs:
+                if search_sent_found:
+                    continue
+
                 for sentence in paragraph.sentences:
                     
                     # Do a fuzzy match tolerant to differences in space and punctuation
                     # between search_sent and sentence.text.
-                    search_sent_normalized = re.sub(r"\s+", " ", search_sent)
+                    search_sent_normalized = re.sub(r"\s+", " ", search_sent).strip()
                     search_sent_normalized = re.sub(r"[^\w ]+", "_", search_sent_normalized)
-                    sentence_normalized = re.sub(r"\s+", " ", sentence.text)
+                    sentence_normalized = re.sub(r"\s+", " ", sentence.text).strip()
                     sentence_normalized = re.sub(r"[^\w ]+", "_", sentence_normalized)
 
-                    if search_sent_normalized == sentence_normalized:
+                    # Don't do exact match---sometimes "sentence" contains a section
+                    # number of other kinds of junk. We should probably also accept substantial
+                    # overlap between the two, but I'll leave that for later.
+                    if search_sent_normalized in sentence_normalized:
                         for token in sentence.tokens:
                             for box in token.boxes:
                                 boxes[search_string].append({
@@ -37,6 +45,9 @@ def find_boxes(search_strings, document):
                                     "height": box.h,
                                     "page": box.page
                                 })
+                    
+                        search_sent_found = True
+                        break
 
     # Output bounding boxes for sentences to a JSON file.
     output_data = []
