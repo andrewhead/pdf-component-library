@@ -1,5 +1,10 @@
 # How to get this demo to work
 
+Note --- make sure you are using Node.js with major version 16. It is quite
+likely these steps will fail otherwise. You can download nvm and use nvm to
+download Node.js with `nvm use 16`. You also need to make sure that you already
+have `yarn` installed and accessible from the command line.
+
 To get this to work, I had to do something along the lines of...
 
 1. `cd ../library/` (go into the folder containing the pdf-component-library library)
