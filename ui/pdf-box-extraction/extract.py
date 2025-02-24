@@ -20,46 +20,60 @@ def find_paragraph(string, document):
 
 def find_boxes(search_strings, document):
 
-    sentence_segmenter = pysbd.Segmenter(language="en", clean=False)
     boxes = defaultdict(list)
 
-    # Search for each of the search strings, and find bounding boxes for
-    # each of those search strings if we can find them in the text.
+    # The idea behind passage matching is to look for token sequences that
+    # closely match the search string. But it has to be tolerant to differences, because exact
+    # matches are thwarted by things like ligatures, that make the PDF token
+    # stream different from the text we processed in the backend.
     for search_string in search_strings:
-        search_sents = sentence_segmenter.segment(search_string)
-        for search_sent in search_sents:
-            search_sent_found = False
-
-            for paragraph in document.paragraphs:
-                if search_sent_found:
-                    continue
-
-                for sentence in paragraph.sentences:
-                    
-                    # Do a fuzzy match tolerant to differences in space and punctuation
-                    # between search_sent and sentence.text.
-                    search_sent_normalized = re.sub(r"[^\w\s]+", "", search_sent)
-                    search_sent_normalized = re.sub(r"\s+", " ", search_sent_normalized).strip()
-                    sentence_normalized = re.sub(r"[^\w\s]+", "", sentence.text)
-                    sentence_normalized = re.sub(r"\s+", " ", sentence_normalized).strip()
+        
+        search_string = search_string.strip()
+        first_search_token = search_string.split()[0]
+        first_search_token = re.sub(r'[^\w\s]', '', first_search_token)
+        search_sent_found = False
+        
+        doc_tokens = list(document.tokens)
+        for start_token_index, token in enumerate(document.tokens):
             
-                    if SequenceMatcher(None, sentence_normalized, search_sent_normalized).ratio() > 0.8:
-                        for token in sentence.tokens:
-                            for box in token.boxes:
-                                boxes[search_string].append({
-                                    "left": box.l,
-                                    "top": box.t,
-                                    "width": box.w,
-                                    "height": box.h,
-                                    "page": box.page
-                                })
-                    
-                        search_sent_found = True
-                        break
-            
-            if not search_sent_found:
-                print("Could not find search string:")
-                print(search_sent)
+            # Check to see if this one token might be the start of a match...
+            # XXX(andrewhead): it would be great to have a search system that
+            # was more resistant to issues than needing an exact match on the first
+            # token. Maybe in a second pass we can do a match on the second token.
+            if token.text == first_search_token:
+                
+                # Then, assemble list of tokens that might just match this search string.
+                potential_match_tokens = [token]
+                token_lookahead = token.text
+                lookahead_index = start_token_index + 1
+                
+                # ... put together those tokens until you have a string of about the same length...
+                while len(token_lookahead) < len(search_string) and lookahead_index < len(doc_tokens):
+                    token_lookahead += (" " + doc_tokens[lookahead_index].text)
+                    potential_match_tokens.append(token)
+                    lookahead_index += 1
+                
+                # Once enough characters have been collected, check for a match.
+                # TODO(andrewhead): extend the PDF token stream enough to get to the end
+                # of a sentence. Right now, this will probably stop partway through the matching
+                # sentence. That seems like a problem for a lter time...
+                if SequenceMatcher(None, token_lookahead, search_string).ratio() > 0.8:
+                    for t in potential_match_tokens:
+                        for box in t.boxes:
+                            boxes[search_string].append({
+                                "left": box.l,
+                                "top": box.t,
+                                "width": box.w,
+                                "height": box.h,
+                                "page": box.page
+                            })
+                
+                    search_sent_found = True
+                    break                
+                
+        if not search_sent_found:
+            print("Could not find search string:")
+            print(search_string)
 
     # Output bounding boxes for sentences to a JSON file.
     output_data = []
