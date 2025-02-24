@@ -42,14 +42,14 @@ export const Header: React.FunctionComponent<Props> = () => {
         <SimpleZoomControl />
       </div>
       <div className={classnames('header-control', { 'is-selected': isShowingHighlightOverlay })}>
-        <a onClick={handleToggleHighlightOverlay}>Highlight Overlay</a>
+        <a onClick={handleToggleHighlightOverlay}>Highlight Claims</a>
       </div>
-      <div className={classnames('header-control', { 'is-selected': isShowingTextHighlight })}>
-        <a onClick={handleToggleTextHighlight}>Highlight Text</a>
-      </div>
-      <div className="header-control">
+      {/* <div className={classnames('header-control', { 'is-selected': isShowingTextHighlight })}>
+        <a onClick={handleToggleTextHighlight}>Highlight Claims</a>
+      </div> */}
+      {/* <div className="header-control">
         <a onClick={handleScrollToFigure}>Scroll to Page 4</a>
-      </div>
+      </div> */}
     </div>
   );
 };
