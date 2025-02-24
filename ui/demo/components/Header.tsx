@@ -32,19 +32,6 @@ export const Header: React.FunctionComponent<Props> = () => {
     scrollToId(id);
   }, []);
 
-  const searchRef = React.useRef<HTMLInputElement>(null);
-  const search = React.useCallback(() => {
-    const searchString = searchRef.current?.value;
-    for (const el of document.querySelectorAll(".reader__passage-scroll-target")) {
-      if (el instanceof HTMLElement) {
-        if (searchString && el.dataset["text"] && el.dataset["text"].includes(searchString) && el.id) {
-          scrollToId(el.id);
-          break;
-        }
-      }
-    }
-  }, []);
-
   return (
     <div className="reader__header">
       <div className="header-control">
@@ -59,10 +46,6 @@ export const Header: React.FunctionComponent<Props> = () => {
       {/* <div className={classnames('header-control', { 'is-selected': isShowingTextHighlight })}>
         <a onClick={handleToggleTextHighlight}>Highlight Claims</a>
       </div> */}
-      <div className="header-control">
-        <a onClick={search}>Find</a>
-        <input ref={searchRef} type="text" placeholder="[string]" />
-      </div>
     </div>
   );
 };

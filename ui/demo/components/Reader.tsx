@@ -1,11 +1,11 @@
 import {
-  BoundingBoxType,
   DocumentContext,
   DocumentWrapper,
   Overlay,
   PageWrapper,
   RENDER_TYPE,
   ScrollContext,
+  scrollToId,
 } from '@allenai/pdf-components';
 import * as React from 'react';
 
@@ -13,7 +13,6 @@ import { DemoHeaderContextProvider } from '../context/DemoHeaderContext';
 import { Header } from './Header';
 import { ScrollToDemo } from './ScrollToDemo';
 import { HighlightOverlayDemo, Passage } from './HighlightOverlayDemo';
-import { TextHighlightDemo } from './TextHighlightDemo';
 
 
 interface Props {
@@ -21,7 +20,12 @@ interface Props {
 }
 
 
-export const Reader: React.FunctionComponent<Props> = ({ paperId }) => {
+export interface ReaderRef {
+  search: (searchString: string) => void;
+}
+
+
+export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId }, ref) => {
   const { pageDimensions, numPages } = React.useContext(DocumentContext);
   const { setScrollRoot } = React.useContext(ScrollContext);
 
@@ -39,6 +43,21 @@ export const Reader: React.FunctionComponent<Props> = ({ paperId }) => {
   }, []);
 
   const [passages, setPassages] = React.useState<Passage[]>([]);
+
+  // Surface some functions on this component, like the ability to scroll
+  // to caller-specified strings.
+  React.useImperativeHandle(ref, () => ({
+    search(searchString: string) {
+      for (const el of document.querySelectorAll(".reader__passage-scroll-target")) {
+        if (el instanceof HTMLElement) {
+          if (searchString && el.dataset["text"] && el.dataset["text"].includes(searchString) && el.id) {
+            scrollToId(el.id);
+            break;
+          }
+        }
+      }
+    },
+  }));
 
   // Attaches annotation data to paper
   React.useEffect(() => {
@@ -94,4 +113,4 @@ export const Reader: React.FunctionComponent<Props> = ({ paperId }) => {
       </DemoHeaderContextProvider>
     </div>
   );
-};
+});

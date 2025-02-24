@@ -41,12 +41,16 @@ export const HighlightOverlayDemo: React.FunctionComponent<Props> = ({ pageIndex
           renderedAnything = true;
         }
       });
+      // Render a target that we can scroll to automatically.
       if (renderedAnything && passage.boxes.length > 0) {
         let props: any = { ...passage.boxes[0] };
-        props.top = props.top - 150;  // Offset so we will scroll to this even when the 
+        // Offset the top of the box. There is a fixed-height header which
+        // will occlude the passage if we don't scroll a little bit above that passage.
+        props.top = props.top - 150;
         props.id = `passage-${pi}-scroll-target`;
         props.className = 'reader__passage-scroll-target'
         props.key = props.id;
+        // Save the text so that we can do a text lookup later.
         props["data-text"] = passage.text;
         boxElements.push(<BoundingBox {...props} />)
       }
