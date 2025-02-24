@@ -12,7 +12,7 @@ import * as React from 'react';
 import { DemoHeaderContextProvider } from '../context/DemoHeaderContext';
 import { Header } from './Header';
 import { ScrollToDemo } from './ScrollToDemo';
-import { HighlightOverlayDemo } from './HighlightOverlayDemo';
+import { HighlightOverlayDemo, Passage } from './HighlightOverlayDemo';
 import { TextHighlightDemo } from './TextHighlightDemo';
 
 
@@ -38,7 +38,8 @@ export const Reader: React.FunctionComponent<Props> = ({ paperId }) => {
     setScrollRoot(null);
   }, []);
 
-  const [boxes, setBoxes] = React.useState<BoundingBoxType[]>([]);
+  const [passages, setPassages] = React.useState<Passage[]>([]);
+
   // Attaches annotation data to paper
   React.useEffect(() => {
     // Don't execute until paper data and PDF document have loaded
@@ -50,20 +51,22 @@ export const Reader: React.FunctionComponent<Props> = ({ paperId }) => {
     fetch(boxesJson)
     .then((response) => response.json())
     .then((data) => {
-      const allBoxes = []
-      for (const entry of data) {
+      const passages = [];
+      for (const i in data) {
+        const entry = data[i];
+        const boxes = []
         for (const box of entry.boxes) {
-          allBoxes.push({
+          boxes.push({
             page: box.page,
             top: box.top * pageDimensions.height,
             left: box.left * pageDimensions.width,
             width: box.width * pageDimensions.width,
             height: box.height * pageDimensions.height,
-          })
+          });
         }
+        passages.push({ id: `passage-${i}`, text: entry.passage, boxes });
       }
-      console.log(allBoxes);
-      setBoxes(allBoxes);
+      setPassages(passages);
     });
   }, [pageDimensions]);
 
@@ -80,8 +83,8 @@ export const Reader: React.FunctionComponent<Props> = ({ paperId }) => {
             {Array.from({ length: numPages }).map((_, i) => (
               <PageWrapper key={i} pageIndex={i} renderType={RENDER_TYPE.SINGLE_CANVAS}>
                 <Overlay>
-                  <HighlightOverlayDemo pageIndex={i} boxes={boxes} />
-                  <TextHighlightDemo pageIndex={i} boxes={boxes} />
+                  <HighlightOverlayDemo pageIndex={i} passages={passages} />
+                  {/* <TextHighlightDemo pageIndex={i} boxes={boxes} /> */}
                   <ScrollToDemo pageIndex={i} />
                 </Overlay>
               </PageWrapper>
