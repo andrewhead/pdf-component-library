@@ -6,6 +6,7 @@ import {
   RENDER_TYPE,
   ScrollContext,
   scrollToId,
+  TransformContext,
 } from '@allenai/pdf-components';
 import * as React from 'react';
 
@@ -28,6 +29,7 @@ export interface ReaderRef {
 export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId }, ref) => {
   const { pageDimensions, numPages } = React.useContext(DocumentContext);
   const { setScrollRoot } = React.useContext(ScrollContext);
+  const { scale, setScale } = React.useContext(TransformContext);
 
   // ref for the div in which the Document component renders
   const pdfContentRef = React.createRef<HTMLDivElement>();
@@ -86,6 +88,7 @@ export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId }, ref) => {
         passages.push({ id: `passage-${i}`, text: entry.passage, boxes });
       }
       setPassages(passages);
+      setScale(.5);
     });
   }, [pageDimensions]);
 
