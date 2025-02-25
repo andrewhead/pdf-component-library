@@ -4,7 +4,6 @@ from collections import defaultdict
 import json
 from difflib import SequenceMatcher
 
-import pysbd
 from papermage.recipes import CoreRecipe
 
 
@@ -50,7 +49,7 @@ def find_boxes(search_strings, document):
                 # ... put together those tokens until you have a string of about the same length...
                 while len(token_lookahead) < len(search_string) and lookahead_index < len(doc_tokens):
                     token_lookahead += (" " + doc_tokens[lookahead_index].text)
-                    potential_match_tokens.append(token)
+                    potential_match_tokens.append(doc_tokens[lookahead_index])
                     lookahead_index += 1
                 
                 # Once enough characters have been collected, check for a match.

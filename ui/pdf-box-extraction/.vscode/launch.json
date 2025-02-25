@@ -10,10 +10,11 @@
             "request": "launch",
             "program": "extract.py",
             "console": "integratedTerminal",
+            "justMyCode": false,
             "args": [
-                "--input-pdf", "explainable-notes.pdf",
-                "--search-strings", "explainable-notes-search-strings.json",
-                "--output-path", "explainable-notes-boxes.json"
+                "--input-pdf", "../../../data/pdfs/549b3991601835af0a4937b5bf1e2c1f5785.pdf",
+                "--search-strings", "../../../data/paper-passages/549b3991601835af0a4937b5bf1e2c1f5785.json",
+                "--output-path", "example.json"
             ]
         }
     ]
