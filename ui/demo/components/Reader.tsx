@@ -7,6 +7,7 @@ import {
   ScrollContext,
   scrollToId,
   TransformContext,
+  UiContext,
 } from '@allenai/pdf-components';
 import * as React from 'react';
 
@@ -30,6 +31,7 @@ export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId }, ref) => {
   const { pageDimensions, numPages } = React.useContext(DocumentContext);
   const { setScrollRoot } = React.useContext(ScrollContext);
   const { scale, setScale } = React.useContext(TransformContext);
+  const { setIsShowingHighlightOverlay } = React.useContext(UiContext);
 
   // ref for the div in which the Document component renders
   const pdfContentRef = React.createRef<HTMLDivElement>();
@@ -88,9 +90,11 @@ export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId }, ref) => {
         passages.push({ id: `passage-${i}`, text: entry.passage, boxes });
       }
       setPassages(passages);
+      // Zoom out. Show highlight overlay by default.
       setScale(.5);
+      setIsShowingHighlightOverlay(true);
     });
-  }, [pageDimensions]);
+  }, [pageDimensions, paperId]);
 
   return (
     <div className="reader__container">
