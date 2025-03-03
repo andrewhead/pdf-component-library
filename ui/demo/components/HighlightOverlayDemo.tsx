@@ -1,4 +1,5 @@
 import { BoundingBox, BoundingBoxType, HighlightOverlay, UiContext } from '@allenai/pdf-components';
+import Popover from 'antd/lib/popover';
 import * as React from 'react';
 
 
@@ -37,7 +38,14 @@ export const HighlightOverlayDemo: React.FunctionComponent<Props> = ({ pageIndex
             isHighlighted: true,
             key: `${pi}-${i}`,
           };
-          boxElements.push(<BoundingBox {...props} />);
+
+          const poppedBox = (
+            <Popover content={passage.text} title="Highlighted Text" trigger="hover">
+              <BoundingBox {...props} />
+            </Popover>
+          );
+
+          boxElements.push(poppedBox);
           renderedAnything = true;
         }
       });
@@ -48,11 +56,12 @@ export const HighlightOverlayDemo: React.FunctionComponent<Props> = ({ pageIndex
         // will occlude the passage if we don't scroll a little bit above that passage.
         props.top = props.top - 150;
         props.id = `passage-${pi}-scroll-target`;
-        props.className = 'reader__passage-scroll-target'
+        props.className = 'reader__passage-scroll-target';
         props.key = props.id;
         // Save the text so that we can do a text lookup later.
-        props["data-text"] = passage.text;
-        boxElements.push(<BoundingBox {...props} />)
+        props['data-text'] = passage.text;
+
+        boxElements.push(<BoundingBox {...props} />);
       }
     });
     return boxElements;
