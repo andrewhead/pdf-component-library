@@ -1,6 +1,7 @@
 [
   {
     "passage": "Patients commented on aspects of progress notes that they found valuable. We describe them here to highlight what kind of outcomes would be achieved better if patients receive adequate support for reading their notes.",
+    "explanation" : "This passage discusses the value of progress notes to patients and the outcomes that could be achieved if patients receive adequate support for reading their notes.",
     "boxes": [
       {
         "left": 0.08790522875816993,
@@ -258,6 +259,7 @@
   },
   {
     "passage": "Plotting a way forward. What trends in research suggest a way forward in developing explainable notes, and what problems need to be solved?",
+    "explanation" : "This passage discusses the trends in research that suggest a way forward in developing explainable notes and the problems that need to be solved.",
     "boxes": [
       {
         "left": 0.5393799457254902,

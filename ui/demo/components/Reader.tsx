@@ -19,6 +19,7 @@ import { HighlightOverlayDemo, Passage } from './HighlightOverlayDemo';
 
 interface Props {
   paperId: string;
+  myNum: number;
 }
 
 
@@ -27,7 +28,7 @@ export interface ReaderRef {
 }
 
 
-export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId }, ref) => {
+export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId, myNum }, ref) => {
   const { pageDimensions, numPages } = React.useContext(DocumentContext);
   const { setScrollRoot } = React.useContext(ScrollContext);
   const { scale, setScale } = React.useContext(TransformContext);
@@ -47,6 +48,8 @@ export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId }, ref) => {
   }, []);
 
   const [passages, setPassages] = React.useState<Passage[]>([]);
+
+  
 
   // Surface some functions on this component, like the ability to scroll
   // to caller-specified strings.
@@ -75,6 +78,7 @@ export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId }, ref) => {
     .then((response) => response.json())
     .then((data) => {
       const passages = [];
+      // add explanation to -boxes.json
       for (const i in data) {
         const entry = data[i];
         const boxes = []
@@ -87,7 +91,11 @@ export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId }, ref) => {
             height: box.height * pageDimensions.height,
           });
         }
-        passages.push({ id: `passage-${i}`, text: entry.passage, boxes });
+        passages.push({ 
+          id: `passage-${i}`, 
+          text: entry.passage, 
+          explanation: entry.explanation,
+          boxes });
       }
       setPassages(passages);
       // Zoom out. Show highlight overlay by default.
@@ -109,7 +117,7 @@ export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId }, ref) => {
             {Array.from({ length: numPages }).map((_, i) => (
               <PageWrapper key={i} pageIndex={i} renderType={RENDER_TYPE.SINGLE_CANVAS}>
                 <Overlay>
-                  <HighlightOverlayDemo pageIndex={i} passages={passages} />
+                  <HighlightOverlayDemo pageIndex={i} passages={passages} myNum={myNum}/>
                   {/* <TextHighlightDemo pageIndex={i} boxes={boxes} /> */}
                   <ScrollToDemo pageIndex={i} />
                 </Overlay>

@@ -9,8 +9,8 @@ import * as ReactDOM from 'react-dom';
 
 declare global {
   interface Window {
-    ReaderApp: React.FunctionComponent<{ paperId: string }>;
-    renderReaderApp: (paperId: string, containerId: string) => void;
+    ReaderApp: React.FunctionComponent<{ paperId: string, myNum: number }>;
+    renderReaderApp: (paperId: string, containerId: string, myNum: number) => void;
     readerRef: React.RefObject<ReaderRef>;
   }
 }
@@ -19,13 +19,14 @@ import { Reader, ReaderRef } from './components/Reader';
 
 interface Props {
   paperId: string;
+  myNum: number;
 }
 
 const readerRef = React.createRef<ReaderRef>();
 
-const ReaderApp: React.FunctionComponent<Props> = ({ paperId }) => (
+const ReaderApp: React.FunctionComponent<Props> = ({ paperId, myNum }) => (
   <ContextProvider>
-    <Reader ref={readerRef} paperId={paperId} />
+    <Reader ref={readerRef} paperId={paperId} myNum={myNum}/>
   </ContextProvider>
 );
 
@@ -33,7 +34,7 @@ const ReaderApp: React.FunctionComponent<Props> = ({ paperId }) => (
 // ReactDOM.render(<ReaderApp />, document.getElementById('root'));
 
 window.ReaderApp = ReaderApp;
-window.renderReaderApp = (paperId: string, containerId: string) => {
-  ReactDOM.render(<ReaderApp paperId={paperId} />, document.getElementById(containerId));
+window.renderReaderApp = (paperId: string, containerId: string, myNum: number) => {
+  ReactDOM.render(<ReaderApp myNum={myNum} paperId={paperId} />, document.getElementById(containerId));
 }
 window.readerRef = readerRef;

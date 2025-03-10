@@ -2,10 +2,17 @@ import { BoundingBox, BoundingBoxType, HighlightOverlay, UiContext } from '@alle
 import Popover from 'antd/lib/popover';
 import * as React from 'react';
 
+type Summaries = Record<
+  string,
+  Array<[string, string, string, string, string, string]>
+>;
+
+
 
 type Props = {
   pageIndex: number;
   passages: Passage[];
+  myNum: number;
 };
 
 
@@ -13,12 +20,13 @@ export interface Passage {
   id: string;
   text: string;
   boxes: BoundingBoxType[];
+  explanation?: string;
 }
 
 /*
  * Example of the HighlightOverlay component
  */
-export const HighlightOverlayDemo: React.FunctionComponent<Props> = ({ pageIndex, passages }: Props) => {
+export const HighlightOverlayDemo: React.FunctionComponent<Props> = ({ pageIndex, passages, myNum}: Props) => {
   const { isShowingHighlightOverlay } = React.useContext(UiContext);
   if (!isShowingHighlightOverlay) {
     return null;
@@ -39,8 +47,12 @@ export const HighlightOverlayDemo: React.FunctionComponent<Props> = ({ pageIndex
             key: `${pi}-${i}`,
           };
 
+          const content = passage.explanation || passage.text;
+
+
           const poppedBox = (
-            <Popover content={passage.text} title="Highlighted Text" trigger="hover">
+            <Popover content={content} title="Highlighted Text" trigger="hover"
+            overlayClassName="reader__highlight-overlay__popover">
               <BoundingBox {...props} />
             </Popover>
           );
