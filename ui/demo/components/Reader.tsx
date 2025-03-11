@@ -1,4 +1,5 @@
 import {
+  BoundingBoxType,
   DocumentContext,
   DocumentWrapper,
   Overlay,
@@ -81,8 +82,9 @@ export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId, myNum }, re
       // add explanation to -boxes.json
       for (const i in data) {
         const entry = data[i];
-        const boxes = []
-        for (const box of entry.boxes) {
+        const boxes: BoundingBoxType[] = [];
+
+        function saveBox(box: any) { 
           boxes.push({
             page: box.page,
             top: box.top * pageDimensions.height,
@@ -91,11 +93,37 @@ export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId, myNum }, re
             height: box.height * pageDimensions.height,
           });
         }
-        passages.push({ 
-          id: `passage-${i}`, 
-          text: entry.passage, 
-          explanation: entry.explanation,
-          boxes });
+
+        let lastBox = null;
+        for (const box of entry.boxes) {
+          // Coalesce boxes that are right next to each other.
+          if (lastBox !== null) {
+            const distance = box.left - (lastBox.left + lastBox.width);
+            if (box.page === lastBox.page && distance > 0 && distance < 0.05) {
+                const newTop = Math.min(lastBox.top, box.top);
+                const newBottom = Math.max(lastBox.top + lastBox.height, box.top + box.height);
+                lastBox = {
+                  page: lastBox.page,
+                  left: lastBox.left,
+                  width: (box.left + box.width) - lastBox.left,
+                  top: newTop,
+                  height: newBottom - newTop,
+                }
+              } else {
+                saveBox(lastBox);
+                lastBox = box;
+              }
+            } else {
+              lastBox = box;
+            }
+          }
+          saveBox(lastBox);
+          passages.push({ 
+            id: `passage-${i}`, 
+            text: entry.passage, 
+            explanation: entry.explanation,
+            boxes
+          });
       }
       setPassages(passages);
       // Zoom out. Show highlight overlay by default.
