@@ -100,32 +100,69 @@ export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId, myNum }, re
           if (lastBox !== null) {
             const distance = box.left - (lastBox.left + lastBox.width);
             if (box.page === lastBox.page && distance > 0 && distance < 0.05) {
-                const newTop = Math.min(lastBox.top, box.top);
-                const newBottom = Math.max(lastBox.top + lastBox.height, box.top + box.height);
-                lastBox = {
-                  page: lastBox.page,
-                  left: lastBox.left,
-                  width: (box.left + box.width) - lastBox.left,
-                  top: newTop,
-                  height: newBottom - newTop,
-                }
-              } else {
-                saveBox(lastBox);
-                lastBox = box;
+              const newTop = Math.min(lastBox.top, box.top);
+              const newBottom = Math.max(lastBox.top + lastBox.height, box.top + box.height);
+              lastBox = {
+                page: lastBox.page,
+                left: lastBox.left,
+                width: (box.left + box.width) - lastBox.left,
+                top: newTop,
+                height: newBottom - newTop,
               }
             } else {
+              saveBox(lastBox);
               lastBox = box;
             }
+          } else {
+            lastBox = box;
           }
-          saveBox(lastBox);
-          passages.push({ 
-            id: `passage-${i}`, 
-            text: entry.passage, 
-            explanation: entry.explanation,
-            boxes
-          });
+        }
+        saveBox(lastBox);
+        passages.push({ 
+          id: `passage-${i}`, 
+          text: entry.passage, 
+          explanation: entry.explanation,
+          boxes
+        });
       }
-      setPassages(passages);
+
+      // Deduplicate passages that intersect with each other.
+      // (Thank you Copilot for the heavy lifting on this snippet.)
+      const deduplicatedPassages: Passage[] = [];
+      for (const passage of passages) {
+        let overlap = false;
+        for (const other of deduplicatedPassages) {
+          for (const box of passage.boxes) {
+            for (const otherBox of other.boxes) {
+              if (box.page === otherBox.page) {
+                const boxLeft = box.left;
+                const boxRight = box.left + box.width;
+                const otherLeft = otherBox.left;
+                const otherRight = otherBox.left + otherBox.width;
+                const boxTop = box.top;
+                const boxBottom = box.top + box.height;
+                const otherTop = otherBox.top;
+                const otherBottom = otherBox.top + otherBox.height;
+                if (
+                  (boxLeft < otherRight && boxRight > otherLeft) &&
+                  (boxTop < otherBottom && boxBottom > otherTop)
+                ) {
+                  overlap = true;
+                  break;
+                }
+              }
+              if (overlap) break;
+            }
+            if (overlap) break;
+          }
+          if (overlap) break;
+        }
+        if (!overlap) {
+          deduplicatedPassages.push(passage);
+        }
+      }
+
+      setPassages(deduplicatedPassages);
       // Zoom out. Show highlight overlay by default.
       setScale(.5);
       setIsShowingHighlightOverlay(true);
