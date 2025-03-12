@@ -47,12 +47,10 @@ export const HighlightOverlayDemo: React.FunctionComponent<Props> = ({ pageIndex
             key: `${pi}-${i}`,
           };
 
-          const content = passage.explanation || "";
-
-
+          const content = passage.explanation || passage.text;
           const poppedBox = (
-            <Popover content={content} title="Highlighted Text" trigger="hover"
-            overlayClassName="reader__highlight-overlay__popover">
+            <Popover content={content} trigger="hover"
+              overlayClassName="reader__highlight-overlay__popover">
               <BoundingBox {...props} />
             </Popover>
           );
