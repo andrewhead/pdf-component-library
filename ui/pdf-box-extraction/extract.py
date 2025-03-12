@@ -90,23 +90,23 @@ def find_boxes(search_strings, document):
     # Output bounding boxes for sentences to a JSON file.
     output_data = []
     for search_string, search_boxes in boxes.items():
-        # explanation = None
-        # for summarize_dict in summarize_dicts:
-        #     for key, value_list in summarize_dict.items():
-        #         for value in value_list:
-        #             if value in value_list:
-        #                 if value[2] == search_string:
-        #                     explanation = value[5]
-        #                     break
-        #         if explanation:
-        #             break
-        #     if explanation:
-        #         break
+        explanation = None
+        for summarize_dict in summarize_dicts:
+            for key, value_list in summarize_dict.items():
+                for value in value_list:
+                    if value in value_list:
+                        if value[2] == search_string:
+                            explanation = value[5]
+                            break
+                if explanation:
+                    break
+            if explanation:
+                break
                 
         output_data.append({
             "passage": search_string,
             "boxes": search_boxes,
-            # "explanation": explanation,
+            "explanation": explanation,
         })
     
     return output_data

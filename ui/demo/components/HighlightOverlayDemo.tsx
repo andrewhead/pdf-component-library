@@ -47,7 +47,7 @@ export const HighlightOverlayDemo: React.FunctionComponent<Props> = ({ pageIndex
             key: `${pi}-${i}`,
           };
 
-          const content = passage.explanation || passage.text;
+          const content = passage.explanation || "";
 
 
           const poppedBox = (
