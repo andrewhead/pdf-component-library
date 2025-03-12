@@ -164,7 +164,7 @@ export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId, myNum }, re
 
       setPassages(deduplicatedPassages);
       // Zoom out. Show highlight overlay by default.
-      setScale(.5);
+      setScale(.85);
       setIsShowingHighlightOverlay(true);
     });
   }, [pageDimensions, paperId]);
