@@ -13,6 +13,7 @@ type Props = {
   pageIndex: number;
   passages: Passage[];
   myNum: number;
+  selectedSentence: string | null;
 };
 
 
@@ -26,7 +27,7 @@ export interface Passage {
 /*
  * Example of the HighlightOverlay component
  */
-export const HighlightOverlayDemo: React.FunctionComponent<Props> = ({ pageIndex, passages, myNum}: Props) => {
+export const HighlightOverlayDemo: React.FunctionComponent<Props> = ({ pageIndex, passages, myNum, selectedSentence}: Props) => {
   const { isShowingHighlightOverlay } = React.useContext(UiContext);
   if (!isShowingHighlightOverlay) {
     return null;
@@ -38,10 +39,14 @@ export const HighlightOverlayDemo: React.FunctionComponent<Props> = ({ pageIndex
       let renderedAnything = false;
       passage.boxes.map((box, i) => {
         // Only render this BoundingBox if it belongs on the current page
+        const classes = ['reader__text-highlight__bbox'];
+        if (selectedSentence && passage.id === selectedSentence) {
+          classes.push('reader__highlight-overlay__bbox__selected');
+        }
         if (box.page === pageIndex) {
           const props = {
             ...box,
-            className: 'reader__text-highlight__bbox',
+            className: classes.join(' '),
             // Set isHighlighted to true for highlighted styling
             isHighlighted: true,
             key: `${pi}-${i}`,
@@ -81,12 +86,13 @@ export const HighlightOverlayDemo: React.FunctionComponent<Props> = ({ pageIndex
     const boxElements: Array<React.ReactElement> = [];
     passages.forEach((passage) => {
       passage.boxes.map((box, i) => {
+        const classes = ['reader__highlight-overlay__bbox'];
         // Only render this BoundingBox if it belongs on the current page
         if (box.page === pageIndex) {
           const props = {
             ...box,
-            className: 'reader__highlight-overlay__bbox',
-            key: i,
+            className: classes.join(' '),
+            key: `${passage.id}-${i}`,
           };
 
           boxElements.push(<BoundingBox {...props} />);

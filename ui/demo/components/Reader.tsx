@@ -49,8 +49,7 @@ export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId, myNum }, re
   }, []);
 
   const [passages, setPassages] = React.useState<Passage[]>([]);
-
-  
+  const [selectedSentence, setSelectedSentence] = React.useState<string | null>(null);  
 
   // Surface some functions on this component, like the ability to scroll
   // to caller-specified strings.
@@ -60,7 +59,12 @@ export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId, myNum }, re
         if (el instanceof HTMLElement) {
           if (searchString && el.dataset["text"] && el.dataset["text"].includes(searchString) && el.id) {
             scrollToId(el.id);
+            // Remove "-scroll-target" from the ID.
+            const id = el.id.replace("-scroll-target", "");
+            setSelectedSentence(id);
             break;
+          } else {
+            setSelectedSentence(null);
           }
         }
       }
@@ -182,7 +186,7 @@ export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId, myNum }, re
             {Array.from({ length: numPages }).map((_, i) => (
               <PageWrapper key={i} pageIndex={i} renderType={RENDER_TYPE.SINGLE_CANVAS}>
                 <Overlay>
-                  <HighlightOverlayDemo pageIndex={i} passages={passages} myNum={myNum}/>
+                  <HighlightOverlayDemo pageIndex={i} passages={passages} myNum={myNum} selectedSentence={selectedSentence}/>
                   {/* <TextHighlightDemo pageIndex={i} boxes={boxes} /> */}
                   <ScrollToDemo pageIndex={i} />
                 </Overlay>
