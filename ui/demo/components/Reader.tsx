@@ -56,18 +56,30 @@ export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId, myNum }, re
   // to caller-specified strings.
   React.useImperativeHandle(ref, () => ({
     search(searchString: string) {
+      let found = false;
       for (const el of document.querySelectorAll(".reader__passage-scroll-target")) {
         if (el instanceof HTMLElement) {
-          if (searchString && el.dataset["text"] && el.dataset["text"].includes(searchString) && el.id) {
+          if (el.dataset["text"] === undefined || !searchString || !el.id) {
+            continue;
+          }
+          const text = el.dataset["text"].replace(/\s+/g, " ");
+          const searchStringSpaceNormalized = searchString.replace(/\s+/g, " ");
+          let match = text.substring(0, 20) === searchStringSpaceNormalized.substring(0, 20);
+          if (match) {
             scrollToId(el.id);
             // Remove "-scroll-target" from the ID.
-            const id = el.id.replace("-scroll-target", "");
-            setSelectedSentence(id);
+            if (el.dataset.passageId) {
+              setSelectedSentence(el.dataset.passageId);
+            } else {
+              setSelectedSentence(null);
+            }
+            found = true;
             break;
-          } else {
-            setSelectedSentence(null);
           }
         }
+      }
+      if (!found) {
+        setSelectedSentence(null);
       }
     },
   }));

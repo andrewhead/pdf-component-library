@@ -79,12 +79,13 @@ export const HighlightOverlayDemo: React.FunctionComponent<Props> = ({ pageIndex
         let props: any = { ...passage.boxes[0] };
         // Offset the top of the box. There is a fixed-height header which
         // will occlude the passage if we don't scroll a little bit above that passage.
-        props.top = props.top - 150;
-        props.id = `passage-${pi}-scroll-target`;
+        props.top = props.top - 250;
+        props.id = `passage-${passage.id}-scroll-target`;
         props.className = 'reader__passage-scroll-target';
         props.key = props.id;
         // Save the text so that we can do a text lookup later.
         props['data-text'] = passage.text;
+        props['data-passage-id'] = passage.id;
 
         boxElements.push(<BoundingBox {...props} />);
       }
