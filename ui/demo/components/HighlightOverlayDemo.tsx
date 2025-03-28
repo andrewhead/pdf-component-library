@@ -14,6 +14,7 @@ type Props = {
   passages: Passage[];
   myNum: number;
   selectedSentence: string | null;
+  setSelectedSentence: (sentence: string | null) => void;
 };
 
 
@@ -27,7 +28,7 @@ export interface Passage {
 /*
  * Example of the HighlightOverlay component
  */
-export const HighlightOverlayDemo: React.FunctionComponent<Props> = ({ pageIndex, passages, myNum, selectedSentence}: Props) => {
+export const HighlightOverlayDemo: React.FunctionComponent<Props> = ({ pageIndex, passages, myNum, selectedSentence, setSelectedSentence }: Props) => {
   const { isShowingHighlightOverlay } = React.useContext(UiContext);
   if (!isShowingHighlightOverlay) {
     return null;
@@ -50,14 +51,23 @@ export const HighlightOverlayDemo: React.FunctionComponent<Props> = ({ pageIndex
             // Set isHighlighted to true for highlighted styling
             isHighlighted: true,
             key: `${pi}-${i}`,
+            onClick: () => { setSelectedSentence(passage.id); }
           };
 
           const content = passage.explanation || passage.text;
+          // const poppedBox = (
+          //   <Popover content={content} trigger="hover"
+          //     overlayClassName="reader__highlight-overlay__popover">
+          //     <BoundingBox {...props} />
+          //   </Popover>
+          // );
           const poppedBox = (
-            <Popover content={content} trigger="hover"
-              overlayClassName="reader__highlight-overlay__popover">
+            <>
+            {/* <Popover content={content} trigger="hover" 
+              overlayClassName="reader__highlight-overlay__popover"> */}
               <BoundingBox {...props} />
-            </Popover>
+            {/* </Popover> */}
+            </>
           );
 
           boxElements.push(poppedBox);

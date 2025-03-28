@@ -6,9 +6,10 @@ import { SimpleZoomControl } from './SimpleZoomControl';
 
 type Props = {
   pdfUrl: string;
+  passageContext: string | null;
 };
 
-export const Header: React.FunctionComponent<Props> = () => {
+export const Header: React.FunctionComponent<Props> = ({ passageContext }) => {
   const {
     isShowingTextHighlight,
     isShowingHighlightOverlay,
@@ -46,6 +47,13 @@ export const Header: React.FunctionComponent<Props> = () => {
       {/* <div className={classnames('header-control', { 'is-selected': isShowingTextHighlight })}>
         <a onClick={handleToggleTextHighlight}>Highlight Claims</a>
       </div> */}
+      {passageContext && (
+        <div className="reader__header__passage-context">
+          <span className="reader__header__passage-context__text">
+            <b>Context for highlighted passage</b>: {passageContext}
+          </span>
+        </div>
+      )}
     </div>
   );
 };

@@ -28,11 +28,12 @@
 
 .reader__header {
   background-color: @pdflib-page-background;
-  padding: 20px;
+  padding: 1rem;
   position: sticky;
   text-align: center;
   top: 0;
   z-index: @z-index-header;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
   
   .header-control {
     display: inline-block;
@@ -119,4 +120,14 @@
 
 .reader__container .pdf-reader__overlay-bounding-box-underline.rotate0 {
   border-bottom: none;
+}
+
+.reader__header__passage-context {
+  margin-top: .5rem;
+}
+
+.reader__header__passage-context__text {
+  b {
+    font-weight: 500;
+  }
 }

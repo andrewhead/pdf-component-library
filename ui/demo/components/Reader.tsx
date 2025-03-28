@@ -16,6 +16,7 @@ import { DemoHeaderContextProvider } from '../context/DemoHeaderContext';
 import { Header } from './Header';
 import { ScrollToDemo } from './ScrollToDemo';
 import { HighlightOverlayDemo, Passage } from './HighlightOverlayDemo';
+import { Footer } from 'antd/lib/layout/layout';
 
 
 interface Props {
@@ -173,10 +174,18 @@ export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId, myNum }, re
     });
   }, [pageDimensions, paperId]);
 
+  let passageContext = null;
+  if (selectedSentence) {
+    let passage = passages.filter(p => p.id === selectedSentence)[0];
+    if (passage) {
+      passageContext = passage.explanation || null;
+    }
+  }
+
   return (
     <div className="reader__container">
       <DemoHeaderContextProvider>
-        <Header pdfUrl={samplePdfUrl} />
+        <Header pdfUrl={samplePdfUrl} passageContext={passageContext} />
         <DocumentWrapper
           className="reader__main"
           file={samplePdfUrl}
@@ -186,7 +195,7 @@ export const Reader = React.forwardRef<ReaderRef, Props>(({ paperId, myNum }, re
             {Array.from({ length: numPages }).map((_, i) => (
               <PageWrapper key={i} pageIndex={i} renderType={RENDER_TYPE.SINGLE_CANVAS}>
                 <Overlay>
-                  <HighlightOverlayDemo pageIndex={i} passages={passages} myNum={myNum} selectedSentence={selectedSentence}/>
+                  <HighlightOverlayDemo pageIndex={i} passages={passages} myNum={myNum} selectedSentence={selectedSentence} setSelectedSentence={setSelectedSentence} />
                   {/* <TextHighlightDemo pageIndex={i} boxes={boxes} /> */}
                   <ScrollToDemo pageIndex={i} />
                 </Overlay>
